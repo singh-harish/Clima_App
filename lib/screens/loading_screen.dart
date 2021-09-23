@@ -1,7 +1,10 @@
+import 'package:climate/screens/location_screen.dart';
 import 'package:climate/services/location.dart';
+import 'package:climate/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+const apiKey = '8a8869354d21259e8c49de9134d48511';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -13,36 +16,32 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
-  void getLocation() async {
+  void getLocationData() async {
     var location =  Location();
     await location.getCurrentLocation();
-    print(location.latitute);
-    print(location.longitude);
-  }
+    
+    NetworkHelper networkHelper = NetworkHelper('https://api.openweathermap.org/data/2.5/weather?lat=${location.latitute}&lon=${location.longitude}&appid=$apiKey&units=metric');
+    var weatherData = await networkHelper.getData();
 
-  void getData() async {
-    http.Response response = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=8a8869354d21259e8c49de9134d48511'));
-    if(response.statusCode==200){
-      String result = response.body;
-      //print(result);
-      var temperature = jsonDecode(result)['main']['temp'];
-      var condition = jsonDecode(result)['weather'][0]['id'];
-      var cityName = jsonDecode(result)['name'];
-      print(temperature);
-      print(condition);
-      print(cityName);
-
-    }
-    else {
-      print(response.statusCode);
-    }
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
+    }));
+      
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: SpinKitWave(
+          color: Colors.white,
+          size: 100.0,
+        ) ,
+      ),
+    );
   }
 }
