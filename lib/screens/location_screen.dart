@@ -1,9 +1,10 @@
+import 'package:climate/screens/city_screen.dart';
 import 'package:climate/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
-  LocationScreen({this.locationWeather});
+  LocationScreen(this.locationWeather);
   final dynamic locationWeather;
   @override
   _LocationScreenState createState() => _LocationScreenState();
@@ -12,7 +13,7 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weather = WeatherModel();
   int? temperature;
-  late String weatherIcon;
+  late String weatherIcon ;
   String? cityName;
   String? weatherMsg;
 
@@ -24,11 +25,11 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUI(dynamic weatherData) {
     setState(() {
-      if(weatherData == null){
-        temperature=0;
-        weatherIcon='Error';
-        weatherMsg='Unable to fetvh Data';
-        cityName='';
+      if (weatherData == null) {
+        temperature = 0;
+        weatherIcon = 'Error';
+        weatherMsg = 'Unable to fetvh Data';
+        cityName = '';
         return;
       }
       double temp = weatherData['main']['temp'];
@@ -72,7 +73,16 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return CityScreen();
+                          },
+                        ),
+                      );
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
